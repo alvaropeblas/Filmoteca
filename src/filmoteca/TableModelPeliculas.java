@@ -16,6 +16,10 @@ import javax.swing.table.AbstractTableModel;
 public class TableModelPeliculas extends AbstractTableModel {
 
     private static final String[] columnNames = {"Titulo", "Año", "Puntuación", "Sinopsis"};
+    public LinkedList<Pelicula> getList() {
+        return list;
+    }
+
     private LinkedList<Pelicula> list;
 
     public TableModelPeliculas(LinkedList<Pelicula> lista) {

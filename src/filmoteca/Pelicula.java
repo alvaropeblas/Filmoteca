@@ -5,6 +5,7 @@
 package filmoteca;
 
 /**
+ * Clase Pelicula
  *
  * @author MEDAC
  */
@@ -14,6 +15,7 @@ public class Pelicula {
     private int año;
     private int puntuacion;
     private String sinopsis;
+//Constructor
 
     public Pelicula(String titulo, int año, int puntuacion, String sinopsis) {
         this.titulo = titulo;
@@ -22,6 +24,7 @@ public class Pelicula {
         this.sinopsis = sinopsis;
     }
 
+    //Getters y Setters
     public String getTitulo() {
         return titulo;
     }

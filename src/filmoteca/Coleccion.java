@@ -23,7 +23,8 @@ public class Coleccion extends javax.swing.JFrame {
     ConexionMySql c;
 
     /**
-     * Creates new form Coleccion
+     * Constructor Inicia una conexion con la base de datos al iniciarse la
+     * aplicacion Actualiza la tabla de peliculas automaticamente al iniciar
      */
     public Coleccion() {
         initComponents();
@@ -35,11 +36,10 @@ public class Coleccion extends javax.swing.JFrame {
             } else {
                 System.out.print(" No conectado");
             }
-            
-            
-         table = new TableModelPeliculas(c.ejecutarSelect("Select * from peliculas"));
+
+            table = new TableModelPeliculas(c.ejecutarSelect("Select * from peliculas"));
             tbTabla.setModel(table);
-            
+
         } catch (SQLException ex) {
             System.out.print(ex.getMessage());
         }
@@ -55,6 +55,8 @@ public class Coleccion extends javax.swing.JFrame {
     private void initComponents() {
 
         upEditar = new javax.swing.JPopupMenu();
+        jmEditar = new javax.swing.JMenuItem();
+        jmBorrar = new javax.swing.JMenuItem();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbTabla = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
@@ -68,7 +70,26 @@ public class Coleccion extends javax.swing.JFrame {
         bLimpiar = new javax.swing.JButton();
         cbPuncuacion = new javax.swing.JComboBox<>();
 
+        upEditar.setComponentPopupMenu(upEditar);
         upEditar.setPopupSize(new java.awt.Dimension(100, 100));
+
+        jmEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/editar.png"))); // NOI18N
+        jmEditar.setText("Editar");
+        jmEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmEditarActionPerformed(evt);
+            }
+        });
+        upEditar.add(jmEditar);
+
+        jmBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/basura.png"))); // NOI18N
+        jmBorrar.setText("Borrar");
+        jmBorrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmBorrarActionPerformed(evt);
+            }
+        });
+        upEditar.add(jmBorrar);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -96,6 +117,7 @@ public class Coleccion extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
+        tbTabla.setComponentPopupMenu(upEditar);
         tbTabla.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         tbTabla.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -130,6 +152,7 @@ public class Coleccion extends javax.swing.JFrame {
             }
         });
 
+        bAñadir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mas.png"))); // NOI18N
         bAñadir.setText("Añadir");
         bAñadir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -137,6 +160,7 @@ public class Coleccion extends javax.swing.JFrame {
             }
         });
 
+        bLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/limpieza-de-datos.png"))); // NOI18N
         bLimpiar.setText("Limpiar");
         bLimpiar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -207,7 +231,7 @@ public class Coleccion extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addComponent(jSinopsis, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -225,7 +249,12 @@ public class Coleccion extends javax.swing.JFrame {
     private void jSinopsisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSinopsisActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jSinopsisActionPerformed
-
+    /**
+     * Botón para añadir una pelicula. Realiza una consulta, y con un Insert
+     * recibe los datos introducidos en los TextField, ejecuta dicha consulta y
+     * actualiza la base de datos, que a su vez actualiza la tabla con los datos
+     * de la BBDD
+     */
     private void bAñadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAñadirActionPerformed
         String consulta = "INSERT INTO `peliculas`(`titulo`, `año`, `puntuacion`, `sinopsis`) VALUES" + "(" + "'" + jTitulo.getText() + "'" + "," + "'" + jAño.getText() + "'" + "," + "'" + cbPuncuacion.getSelectedItem() + "'" + "," + "'" + jSinopsis.getText() + "'" + ")";
         try {
@@ -240,11 +269,13 @@ public class Coleccion extends javax.swing.JFrame {
 
 
     }//GEN-LAST:event_bAñadirActionPerformed
-
+    /**
+     * Botón para limpiar los campos de texto.
+     */
     private void bLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLimpiarActionPerformed
-      jTitulo.setText("");
-      jAño.setText("");
-      jSinopsis.setText("");
+        jTitulo.setText("");
+        jAño.setText("");
+        jSinopsis.setText("");
     }//GEN-LAST:event_bLimpiarActionPerformed
 
     private void cbPuncuacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPuncuacionActionPerformed
@@ -252,17 +283,46 @@ public class Coleccion extends javax.swing.JFrame {
     }//GEN-LAST:event_cbPuncuacionActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-      
-        try {
-            c.ejecutarSelect("Select * from peliculas");
-        } catch (SQLException ex) {
-            Logger.getLogger(Coleccion.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
     }//GEN-LAST:event_formWindowActivated
 
     private void tbTablaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbTablaMouseClicked
 
     }//GEN-LAST:event_tbTablaMouseClicked
+    /**
+     * Botón que abre un nuevo JFrame, si se ha pulsado correctamente sobre una
+     * fila de la tabla. Este JFrame recibe por parametros, la pelicula escogida
+     * de la lista y el JTable
+     */
+    private void jmEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmEditarActionPerformed
+        if (tbTabla.getSelectedRow() != -1) {
+            Editar ed = new Editar(
+                    table.getList().get(tbTabla.getSelectedRow()),
+                    tbTabla
+            );
+            ed.setVisible(true);
+        }
+
+
+    }//GEN-LAST:event_jmEditarActionPerformed
+    /**
+     * Botón que ejecuta un DELETE a la base de datos y elimina la pelicula
+     * escogida. Actualiza el JTable con la BBDD actualizada.
+     */
+    private void jmBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmBorrarActionPerformed
+        Pelicula p = table.getValueAt(tbTabla.getSelectedRow());
+        String consulta = "Delete from peliculas where titulo =  " + "'" + p.getTitulo() + "'";
+
+        try {
+            System.out.println(c.ejecutarInsertUpdateDelete(consulta));
+            table = new TableModelPeliculas(c.ejecutarSelect("Select * from peliculas"));
+            tbTabla.setModel(table);
+        } catch (SQLException ex) {
+            Logger.getLogger(Coleccion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+    }//GEN-LAST:event_jmBorrarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -311,6 +371,8 @@ public class Coleccion extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jSinopsis;
     private javax.swing.JTextField jTitulo;
+    private javax.swing.JMenuItem jmBorrar;
+    private javax.swing.JMenuItem jmEditar;
     private javax.swing.JTable tbTabla;
     private javax.swing.JPopupMenu upEditar;
     // End of variables declaration//GEN-END:variables
