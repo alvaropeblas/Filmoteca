@@ -1,30 +1,43 @@
 /*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+ /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package filmoteca;
 
 /**
- * Clase Pelicula
  *
  * @author MEDAC
  */
 public class Pelicula {
 
+    private int id;
     private String titulo;
-    private int año;
+    private int anyo;
     private int puntuacion;
     private String sinopsis;
-//Constructor
 
-    public Pelicula(String titulo, int año, int puntuacion, String sinopsis) {
+    public Pelicula(int id, String titulo, int anyo, int puntuacion, String sinopsis) {
+        this.id = id;
         this.titulo = titulo;
-        this.año = año;
+        this.anyo = anyo;
         this.puntuacion = puntuacion;
         this.sinopsis = sinopsis;
     }
 
-    //Getters y Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getTitulo() {
         return titulo;
     }
@@ -33,12 +46,20 @@ public class Pelicula {
         this.titulo = titulo;
     }
 
-    public int getAño() {
-        return año;
+    public int getAnyo() {
+        return anyo;
     }
 
-    public void setAño(int año) {
-        this.año = año;
+    public void setAnyo(int anyo) {
+        this.anyo = anyo;
+    }
+
+    public String getSinopsis() {
+        return sinopsis;
+    }
+
+    public void setSinopsis(String sinopsis) {
+        this.sinopsis = sinopsis;
     }
 
     public int getPuntuacion() {
@@ -49,12 +70,10 @@ public class Pelicula {
         this.puntuacion = puntuacion;
     }
 
-    public String getSinopsis() {
-        return sinopsis;
-    }
-
-    public void setSinopsis(String sinopsis) {
-        this.sinopsis = sinopsis;
+    @Override
+    public String toString() {
+        return "Pelicula [titulo=" + titulo + ", anyo=" + anyo + ", puntuacion=" + puntuacion + ", sinopsis=" + sinopsis
+                + "]";
     }
 
 }

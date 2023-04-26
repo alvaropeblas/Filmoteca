@@ -4,7 +4,7 @@
  */
 package filmoteca;
 
-import java.sql.SQLException;
+import java.awt.Frame;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTable;
@@ -13,18 +13,13 @@ import javax.swing.JTable;
  *
  * @author MEDAC
  */
-public class Editar extends javax.swing.JFrame {
+public class Editar extends javax.swing.JDialog {
 
     TableModelPeliculas table;
-    String BD = "coleccion";
-    String USUARIO = "root";
-    String PASS = "";
-    String HOST = "localhost";
+    private boolean ok;
 
     Pelicula edPelicula;
     JTable edJTable;
-
-    ConexionMySql c;
 
     /**
      * Constructor que recibe los parametros del JFrame -> Coleccion, e iguala
@@ -32,27 +27,23 @@ public class Editar extends javax.swing.JFrame {
      * de este JFrame con los datos de la pelixula escogida y que queremos
      * actualizar.
      */
-    public Editar(Pelicula p, JTable j) {
-
+    public Editar(Pelicula p, Frame frame) {
+        super(frame, true);
+        
         edPelicula = p;
-        edJTable = j;
+        ok = false;
         initComponents();
 
         tTitulo.setText(edPelicula.getTitulo());
-        tAño.setText(String.valueOf(edPelicula.getAño()));
+        tAño.setText(String.valueOf(edPelicula.getAnyo()));
         tSinopsis.setText(edPelicula.getSinopsis());
         cbPuntuacion.setSelectedIndex(edPelicula.getPuntuacion() - 1);
+        lID.setText(String.valueOf(edPelicula.getId()));
 
-        c = new ConexionMySql(HOST, USUARIO, PASS, BD);
         try {
-            if (c.conectar()) {
+            ConexionDB4O.getInstance().conectar();
 
-                System.out.print("Conectado");
-            } else {
-                System.out.print(" No conectado");
-            }
-
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             System.out.print(ex.getMessage());
         }
     }
@@ -76,6 +67,7 @@ public class Editar extends javax.swing.JFrame {
         tSinopsis = new javax.swing.JTextField();
         bActualizar = new javax.swing.JButton();
         bCancelar = new javax.swing.JButton();
+        lID = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -134,38 +126,42 @@ public class Editar extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tTitulo))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(tAño, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbPuntuacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(bActualizar)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(bCancelar))
-                            .addComponent(tSinopsis))))
-                .addContainerGap(11, Short.MAX_VALUE))
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(bActualizar)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(bCancelar))
+                                    .addComponent(tSinopsis)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(tAño, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cbPuntuacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lID))
+                        .addGap(0, 5, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(42, 42, 42)
+                .addGap(19, 19, 19)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(tTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(34, 34, 34)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(tAño, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -182,34 +178,37 @@ public class Editar extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(bCancelar)
                     .addComponent(bActualizar))
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lID)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-/**
+    public Pelicula editar() {
+        this.setVisible(true);
+        Pelicula peli = null;
+
+        if (ok) {
+            String titulo = tTitulo.getText();
+            int anyo = Integer.parseInt(tAño.getText());
+            int puntuacion = Integer.parseInt(cbPuntuacion.getSelectedItem().toString());
+            String sinopsis = tSinopsis.getText();
+            int id = edPelicula.getId();
+            peli = new Pelicula(id, titulo, anyo, puntuacion, sinopsis);
+        }
+
+        return peli;
+    }
+
+    /**
      * Botón actualizar que en primero lugar ejecuta un DELETE de la pelicula
      * escogida. Después ejecuta un INSERT con los nuevos datos de la pelicula a
      * introducir. En último lugar actualiza los datos del JTable con los nuevos
      * datos de la BBDD y cierra la ventana.
      */
     private void bActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bActualizarActionPerformed
-
-        String borrado = "Delete from peliculas where titulo =  " + "'" + edPelicula.getTitulo() + "'";
-        String consulta = "INSERT INTO `peliculas`(`titulo`, `año`, `puntuacion`, `sinopsis`) VALUES" + "(" + "'" + tTitulo.getText() + "'" + "," + "'" + tAño.getText() + "'" + "," + "'" + cbPuntuacion.getSelectedItem() + "'" + "," + "'" + tSinopsis.getText() + "'" + ")";
-
-        try {
-
-            System.out.println(c.ejecutarInsertUpdateDelete(borrado));
-            System.out.println(c.ejecutarInsertUpdateDelete(consulta));
-            table = new TableModelPeliculas(c.ejecutarSelect("Select * from peliculas"));
-            edJTable.setModel(table);
-
-            System.out.println(consulta);
-
-        } catch (SQLException ex) {
-            Logger.getLogger(Coleccion.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        ok = true;
         dispose();
     }//GEN-LAST:event_bActualizarActionPerformed
 
@@ -245,6 +244,7 @@ public class Editar extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel lID;
     private javax.swing.JTextField tAño;
     private javax.swing.JTextField tSinopsis;
     private javax.swing.JTextField tTitulo;

@@ -4,7 +4,6 @@
  */
 package filmoteca;
 
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,34 +14,24 @@ import java.util.logging.Logger;
 public class Coleccion extends javax.swing.JFrame {
 
     TableModelPeliculas table;
-    String BD = "coleccion";
-    String USUARIO = "root";
-    String PASS = "";
-    String HOST = "localhost";
-
-    ConexionMySql c;
 
     /**
      * Constructor Inicia una conexion con la base de datos al iniciarse la
      * aplicacion Actualiza la tabla de peliculas automaticamente al iniciar
      */
     public Coleccion() {
-        initComponents();
-        c = new ConexionMySql(HOST, USUARIO, PASS, BD);
+
         try {
-            if (c.conectar()) {
+            ConexionDB4O.crearConexion("bdpeliculas.db4o");
+            ConexionDB4O.getInstance().conectar();
 
-                System.out.print("Conectado");
-            } else {
-                System.out.print(" No conectado");
-            }
+            table = new TableModelPeliculas();
+            initComponents();
 
-            table = new TableModelPeliculas(c.ejecutarSelect("Select * from peliculas"));
-            tbTabla.setModel(table);
-
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             System.out.print(ex.getMessage());
         }
+
     }
 
     /**
@@ -98,25 +87,7 @@ public class Coleccion extends javax.swing.JFrame {
             }
         });
 
-        tbTabla.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Titulo", "Año", "Puntuación", "Sinopsis"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
+        tbTabla.setModel(table);
         tbTabla.setComponentPopupMenu(upEditar);
         tbTabla.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         tbTabla.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -179,34 +150,34 @@ public class Coleccion extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jLabel4)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jSinopsis, javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(bAñadir)
-                            .addComponent(bLimpiar))
-                        .addGap(25, 25, 25))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jAño, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jAño, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cbPuncuacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jSinopsis, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(cbPuncuacion, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(86, 86, 86)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(bLimpiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(bAñadir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -217,21 +188,19 @@ public class Coleccion extends javax.swing.JFrame {
                     .addComponent(jTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(bAñadir))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jAño, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)
-                    .addComponent(bLimpiar)
-                    .addComponent(cbPuncuacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel4)
-                        .addGap(56, 56, 56))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jSinopsis, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel2)
+                        .addComponent(jAño, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(bLimpiar)
+                        .addComponent(cbPuncuacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSinopsis, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -256,14 +225,21 @@ public class Coleccion extends javax.swing.JFrame {
      * de la BBDD
      */
     private void bAñadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAñadirActionPerformed
-        String consulta = "INSERT INTO `peliculas`(`titulo`, `año`, `puntuacion`, `sinopsis`) VALUES" + "(" + "'" + jTitulo.getText() + "'" + "," + "'" + jAño.getText() + "'" + "," + "'" + cbPuncuacion.getSelectedItem() + "'" + "," + "'" + jSinopsis.getText() + "'" + ")";
-        try {
 
-            System.out.println(c.ejecutarInsertUpdateDelete(consulta));
-            System.out.println(consulta);
-            table = new TableModelPeliculas(c.ejecutarSelect("Select * from peliculas"));
-            tbTabla.setModel(table);
-        } catch (SQLException ex) {
+        String titulo = jTitulo.getText();
+        int anyo = Integer.parseInt(jAño.getText());
+        int puntuacion = Integer.parseInt(cbPuncuacion.getSelectedItem().toString());
+        String sinopsis = jSinopsis.getText();
+
+        try {
+            int id = 0;
+            if (ConexionDB4O.getInstance().listarPeliculas().isEmpty()) {
+                id = 1;
+            } else {
+                id = ConexionDB4O.getInstance().listarPeliculas().getLast().getId() + 1;
+            }
+            table.insertarPeliculas(id, titulo, anyo, puntuacion, sinopsis);
+        } catch (Exception ex) {
             Logger.getLogger(Coleccion.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -295,12 +271,13 @@ public class Coleccion extends javax.swing.JFrame {
      * de la lista y el JTable
      */
     private void jmEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmEditarActionPerformed
-        if (tbTabla.getSelectedRow() != -1) {
-            Editar ed = new Editar(
-                    table.getList().get(tbTabla.getSelectedRow()),
-                    tbTabla
-            );
-            ed.setVisible(true);
+        Editar edit = new Editar( table.getList().get(tbTabla.getSelectedRow()), this);
+
+        Pelicula peliEdit = edit.editar();
+        try {
+            table.actualizarPeliculas(peliEdit.getId(), peliEdit.getTitulo(), peliEdit.getAnyo(), peliEdit.getPuntuacion(), peliEdit.getSinopsis());
+        } catch (Exception ex) {
+            Logger.getLogger(Coleccion.class.getName()).log(Level.SEVERE, null, ex);
         }
 
 
@@ -311,13 +288,12 @@ public class Coleccion extends javax.swing.JFrame {
      */
     private void jmBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmBorrarActionPerformed
         Pelicula p = table.getValueAt(tbTabla.getSelectedRow());
-        String consulta = "Delete from peliculas where titulo =  " + "'" + p.getTitulo() + "'";
-
+        int id = p.getId();
+        System.out.println(id);
+        table.borrarPelicula(id);
         try {
-            System.out.println(c.ejecutarInsertUpdateDelete(consulta));
-            table = new TableModelPeliculas(c.ejecutarSelect("Select * from peliculas"));
-            tbTabla.setModel(table);
-        } catch (SQLException ex) {
+
+        } catch (Exception ex) {
             Logger.getLogger(Coleccion.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -355,6 +331,7 @@ public class Coleccion extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Coleccion().setVisible(true);
+
             }
         });
     }

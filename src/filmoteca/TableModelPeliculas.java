@@ -3,11 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package filmoteca;
+
 import java.util.LinkedList;
 import javax.swing.table.AbstractTableModel;
-
 
 /**
  *
@@ -15,7 +14,8 @@ import javax.swing.table.AbstractTableModel;
  */
 public class TableModelPeliculas extends AbstractTableModel {
 
-    private static final String[] columnNames = {"Titulo", "Año", "Puntuación", "Sinopsis"};
+    private static final String[] columnNames = {"Titulo", "Anyo", "Puntuación", "Sinopsis"};
+
     public LinkedList<Pelicula> getList() {
         return list;
     }
@@ -23,9 +23,53 @@ public class TableModelPeliculas extends AbstractTableModel {
     private LinkedList<Pelicula> list;
 
     public TableModelPeliculas(LinkedList<Pelicula> lista) {
-        this.list=lista;
+        this.list = lista;
         // Notifica a la vista que el contenido ha cambiado para que se refresque.
-        //fireTableDataChanged();
+        fireTableDataChanged();
+    }
+
+    public TableModelPeliculas() {
+        try {
+            list = new LinkedList<Pelicula>();
+            cargarPeliculas();
+        } catch (Exception e) {
+            System.out.println("Error creando crontrolador");
+        }
+    }
+
+    public void insertarPeliculas(int id, String titulo, int anyo, int puntuacion, String sinopsis) {
+
+        try {
+
+            Pelicula p = new Pelicula(id, titulo, anyo, puntuacion, sinopsis);
+            ConexionDB4O.getInstance().añadirPeliculas(p);
+        } catch (Exception e) {
+            System.out.println("error creando crontrolador");
+        }
+        cargarPeliculas();
+    }
+
+    public void borrarPelicula(int id) {
+        try {
+            ConexionDB4O.getInstance().borrarPelicula(id);
+        } catch (Exception e) {
+            System.out.println("Error borrando la pelicula");
+        }
+        cargarPeliculas();
+
+    }
+
+    public void cargarPeliculas() {
+        try {
+            LinkedList<Pelicula> peli = ConexionDB4O.getInstance().listarPeliculas();
+
+            list.clear();
+            list.addAll(peli);
+        } catch (Exception e) {
+            System.out.println("Error cargando pelis");
+        }
+
+        fireTableDataChanged();
     }
 
     public Pelicula getValueAt(int rowIndex) {
@@ -53,13 +97,22 @@ public class TableModelPeliculas extends AbstractTableModel {
             case 0:
                 return list.get(rowIndex).getTitulo();
             case 1:
-                return list.get(rowIndex).getAño();
+                return list.get(rowIndex).getAnyo();
             case 2:
                 return list.get(rowIndex).getPuntuacion();
             case 3:
                 return list.get(rowIndex).getSinopsis();
         }
         return null;
+    }
+
+    void actualizarPeliculas(int id, String titulo, int anyo, int puntuacion, String sinopsis) {
+        try {
+            ConexionDB4O.getInstance().actualizarPelicula(id, titulo, anyo, puntuacion, sinopsis);
+        } catch (Exception e) {
+            System.out.println("Error actualizando pelicula");
+        }
+            cargarPeliculas();
     }
 
 }
